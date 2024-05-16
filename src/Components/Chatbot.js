@@ -6,11 +6,10 @@ const commonQuestions = {
   "How are you?": "I'm just a bunch of code, but I'm functioning as expected!",
   "What is the capital of France?": "The capital of France is Paris.",
   "What is 2 + 2?": "2 + 2 is 4.",
-  
   // Add more questions and answers as needed
 };
 
-const Chatbot = () => {
+const Chatbot = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
@@ -20,13 +19,21 @@ const Chatbot = () => {
     const userMessage = { text: input, sender: 'user' };
     const botResponse = commonQuestions[input] || "Sorry, I don't understand that question.";
     const botMessage = { text: botResponse, sender: 'bot' };
-    
+
     setMessages([...messages, userMessage, botMessage]);
     setInput('');
   };
 
+  const refreshChat = () => {
+    setMessages([]); 
+  };
+
   return (
-    <div className="chat-container">
+    <div className={`chat-container ${isOpen ? 'open' : ''}`}>
+      <div className="chat-header">
+        <button className="close-button" onClick={onClose}>Close</button>
+        <button className="refresh-button" onClick={refreshChat}>Refresh</button>
+      </div>
       <div className="chat-list">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
@@ -52,4 +59,19 @@ const Chatbot = () => {
   );
 };
 
-export default Chatbot;
+const ChatbotLauncher = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleChatbot = () => {
+    setIsOpen(!isOpen);
+  };
+
+  return (
+    <div className="chatbot-launcher">
+      <button className="chatbot-button" onClick={toggleChatbot}>Open Chatbot</button>
+      <Chatbot isOpen={isOpen} onClose={toggleChatbot} />
+    </div>
+  );
+};
+
+export default ChatbotLauncher;
