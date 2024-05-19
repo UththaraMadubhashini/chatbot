@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import './Chatbot.css';
+import chatbot from '../Assets/chatbot.png'; 
+import bot from '../Assets/bot.png';
+import chatClient from '../Assets/chatClient.png';
 
 const commonQuestions = {
-  "What is your name?": "My name is Chatbot.",
-  "How are you?": "I'm just a bunch of code, but I'm functioning as expected!",
-  "What is the capital of France?": "The capital of France is Paris.",
-  "What is 2 + 2?": "2 + 2 is 4.",
+  "book ticket": "Sure! Which event would you like to book tickets for?",
+  "event": "We have the following events available: Concert, Theatre, Sports. Which one are you interested in?",
+  "concert": "Great choice! How many tickets would you like to book?",
+  
   // Add more questions and answers as needed
 };
 
@@ -17,7 +20,7 @@ const Chatbot = ({ isOpen, onClose }) => {
     if (!input.trim()) return;
 
     const userMessage = { text: input, sender: 'user' };
-    const botResponse = commonQuestions[input] || "Sorry, I don't understand that question.";
+    const botResponse = commonQuestions[input.toLowerCase()] || "I'm not sure what you mean. Can you explain?";
     const botMessage = { text: botResponse, sender: 'bot' };
 
     setMessages([...messages, userMessage, botMessage]);
@@ -37,7 +40,13 @@ const Chatbot = ({ isOpen, onClose }) => {
       <div className="chat-list">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender}`}>
-            {message.text}
+            {message.sender === 'user' && (
+              <img src={chatClient} alt="User" className="message-image" />
+            )}
+            {message.sender === 'bot' && (
+              <img src={bot} alt="Bot" className="message-image" />
+            )}
+            <div className="message-text">{message.text}</div>
           </div>
         ))}
       </div>
@@ -68,8 +77,10 @@ const ChatbotLauncher = () => {
 
   return (
     <div className="chatbot-launcher">
-      <button className="chatbot-button" onClick={toggleChatbot}>Open Chatbot</button>
-      <Chatbot isOpen={isOpen} onClose={toggleChatbot} />
+      <button className="chatbot-button" onClick={toggleChatbot}>
+        <img src={chatbot} alt="Chatbot Icon" className="chatbot-image" />
+      </button>
+      {isOpen && <Chatbot isOpen={isOpen} onClose={toggleChatbot} />}
     </div>
   );
 };
